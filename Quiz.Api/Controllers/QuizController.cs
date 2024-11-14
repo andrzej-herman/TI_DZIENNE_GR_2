@@ -1,14 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using Quiz.Api.Services;
 
 namespace Quiz.Api.Controllers
 {
 	[ApiController]
 	public class QuizController : ControllerBase
 	{
-		public QuizController()
-		{
+        private readonly IQuizService _quizService;
 
-		}
+        public QuizController(IQuizService quizService)
+		{
+            _quizService = quizService;
+        }
 
 		// pytanie wraz z odpowiedziami
 		// url: https://localhost:7000/getquestion
@@ -16,17 +19,19 @@ namespace Quiz.Api.Controllers
 		[Route("getquestion")]
 		public IActionResult GetQuestion([FromQuery] int category)
 		{
-			// QuestionDto
+			var question = _quizService.GetQuestion(category);
+			return Ok(question);
 		}
 
 		// sprawdzenie czy odpowiedü o danym id jest prawid≥owa
 		// url: https://localhost:7000/checkanswer
 		[HttpGet]
 		[Route("checkanswer")]
-		public IActionResult CheckAnswer([FromQuery] int answerId)
+		public IActionResult CheckAnswer([FromQuery] Guid answerId, [FromQuery] int category)
 		{
-			// bool
-		}
+            var result = _quizService.CheckAnswer(answerId, category);
+            return Ok(result);
+        }
 
 	}
 }

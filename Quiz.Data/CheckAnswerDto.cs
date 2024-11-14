@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Quiz.Data
 {
-    public class AnswerDto
+    public class CheckAnswerDto
     {
-        public Guid Id { get; set; }
-        public string? Content { get; set; }
+        public bool IsCorrectAnswer { get; set; }
+        public int NextCategory { get; set; }
     }
 }
