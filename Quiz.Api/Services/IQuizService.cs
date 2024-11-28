@@ -4,7 +4,7 @@ namespace Quiz.Api.Services
 {
     public interface IQuizService
     {
-        CheckAnswerDto CheckAnswer(Guid answerId, int category);
-        QuestionDto GetQuestion(int category);
+        Task<CheckAnswerDto> CheckAnswer(string answerId, int category);
+        Task<QuestionDto> GetQuestion(int category);
     }
 }

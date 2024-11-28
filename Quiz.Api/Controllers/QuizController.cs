@@ -17,9 +17,9 @@ namespace Quiz.Api.Controllers
 		// url: https://localhost:7000/getquestion
 		[HttpGet]
 		[Route("getquestion")]
-		public IActionResult GetQuestion([FromQuery] int category)
+		public async Task<IActionResult> GetQuestion([FromQuery] int category)
 		{
-			var question = _quizService.GetQuestion(category);
+			var question = await _quizService.GetQuestion(category);
 			return Ok(question);
 		}
 
@@ -27,9 +27,9 @@ namespace Quiz.Api.Controllers
 		// url: https://localhost:7000/checkanswer
 		[HttpGet]
 		[Route("checkanswer")]
-		public IActionResult CheckAnswer([FromQuery] Guid answerId, [FromQuery] int category)
+		public async Task<IActionResult> CheckAnswer([FromQuery] string answerId, [FromQuery] int category)
 		{
-            var result = _quizService.CheckAnswer(answerId, category);
+            var result = await _quizService.CheckAnswer(answerId, category);
             return Ok(result);
         }
 

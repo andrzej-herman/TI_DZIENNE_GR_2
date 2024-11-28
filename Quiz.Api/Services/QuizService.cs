@@ -27,21 +27,21 @@ namespace Quiz.Api.Services
         }
 
 
-        public QuestionDto GetQuestion(int category)
+        public async Task<QuestionDto> GetQuestion(int category)
         {
             var questions = new List<QuestionDto>();
-            _sqlConnection.Open();
+            await _sqlConnection.OpenAsync();
             var query = $"SELECT * FROM Questions WHERE QuestionCategory = {category}";
             var command  = new SqlCommand(query, _sqlConnection);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 var id = reader.GetGuid(0);
                 var qCat = reader.GetInt32(1);
                 var qCont = reader.GetString(2);
                 var q = new QuestionDto
                 {
-                    Id = id,
+                    Id = id.ToString(),
                     Category = qCat,
                     Content = qCont,
                     Answers = new List<AnswerDto>()
@@ -49,48 +49,48 @@ namespace Quiz.Api.Services
 
                 questions.Add(q);
             }
-            reader.Close();
+            await reader.CloseAsync();
 
             var number = _random.Next(0, questions.Count);
             var question = questions[number];
 
             var queryAnswers = $"SELECT * FROM Answers WHERE QuestionId = '{question.Id}'";
             var commandAnswers = new SqlCommand(queryAnswers, _sqlConnection);
-            var readerAnswers = commandAnswers.ExecuteReader();
-            while (readerAnswers.Read())
+            var readerAnswers = await commandAnswers.ExecuteReaderAsync();
+            while (await readerAnswers.ReadAsync())
             {
                 var aId = readerAnswers.GetGuid(0);
                 var aCont = readerAnswers.GetString(1);
                 var a = new AnswerDto
                 {
-                    Id = aId,
+                    Id = aId.ToString(),
                     Content = aCont,
                 };
 
                 question!.Answers!.Add(a);
             }
-            readerAnswers.Close();
-            _sqlConnection.Close();
+            await readerAnswers.CloseAsync();
+            await  _sqlConnection.CloseAsync();
             return question;
         }
 
 
 
-        public CheckAnswerDto CheckAnswer(Guid answerId, int category)
+        public async Task<CheckAnswerDto> CheckAnswer(string answerId, int category)
         {
             List<int> allCategories = [100, 200, 300, 400, 500, 750, 1000];
             var nextCategory = 0;
             bool isCorrect = false;
-            _sqlConnection.Open();
+            await _sqlConnection.OpenAsync();
             var query = $"SELECT AnswerIsCorrect FROM Answers WHERE AnswerId = '{answerId}'";
             var command = new SqlCommand(query, _sqlConnection);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 isCorrect = reader.GetBoolean(0);
             }
-            reader.Close();
-            _sqlConnection.Close();
+            await reader.CloseAsync();
+            await _sqlConnection.CloseAsync();
             var index = allCategories.IndexOf(category);
 
             if (index != 6)
