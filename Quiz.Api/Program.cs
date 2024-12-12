@@ -2,6 +2,7 @@ using Quiz.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHealthChecks();
 builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -16,8 +17,10 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+
 app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/zdrowko");
 app.Run();

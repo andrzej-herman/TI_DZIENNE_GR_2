@@ -1,5 +1,6 @@
 ﻿@page "/gameover"
 @inject NavigationManager NavigationManager
+@inject IJSRuntime Js
 
 <h1 style="color:red">Niestety to nie jest poprawna odpowiedź.</h1>
 <br/>
@@ -9,8 +10,9 @@
 
 @code {
 
-    private void StartQuiz()
+    private async Task StartQuiz()
     {
-        NavigationManager.NavigateTo("/question/100");
+        await Js.InvokeVoidAsync("localStorage.setItem", CookieName.CATEGORY, "100");
+        NavigationManager.NavigateTo("/question");
     }
 }

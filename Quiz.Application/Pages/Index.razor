@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
+@inject IJSRuntime Js
 
 <h1>Witamy w Quizie</h1>
 <p>Spróbuj odpowiedzieć na 7 pytań</p>
@@ -9,8 +10,9 @@
 
 @code {
 
-    private void StartQuiz()
+    private async Task StartQuiz()
     {
-        NavigationManager.NavigateTo("/question/100");
+        await Js.InvokeVoidAsync("localStorage.setItem", CookieName.CATEGORY, "100");
+        NavigationManager.NavigateTo("/question");
     }
 }

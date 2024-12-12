@@ -1,7 +1,8 @@
-﻿@page "/question/{Category}"
+﻿@page "/question"
 @using Quiz.Data
 @inject NavigationManager NavigationManager
 @inject IGameService GameService
+@inject IJSRuntime Js
 
 <style>
     .answer {
@@ -44,8 +45,8 @@
 
 @code {
 
-    [Parameter] public string? Category { get; set; }
 
+    private int currentCategory;
     private string? loaderText;
     private bool isLoading;
     private QuestionDto? question;
@@ -59,9 +60,11 @@
 
     private async Task GetQuestion()
     {
+        var cat = await Js.InvokeAsync<string>("localStorage.getItem", CookieName.CATEGORY, "100");
+        currentCategory = int.Parse(cat!);
         loaderText = "Trwa ładowanie pytania ...";
         isLoading = true;
-        question = await GameService.GetQuestion(int.Parse(Category!));
+        question = await GameService.GetQuestion(currentCategory);
         isLoading = false;
         StateHasChanged();
     }
@@ -72,7 +75,7 @@
         question = null;
         loaderText = "Sprawdzanie odpowiedzi ...";
         isLoading = true;
-        var check = await GameService.CheckAnswer(answerId, int.Parse(Category!));
+        var check = await GameService.CheckAnswer(answerId, currentCategory);
         if (check!.IsCorrectAnswer)
         {
             if (check!.NextCategory == 0)
@@ -81,7 +84,8 @@
             }
             else
             {
-                NavigationManager.NavigateTo($"/question/{check.NextCategory}");
+                await Js.InvokeVoidAsync("localStorage.setItem", CookieName.CATEGORY, check.NextCategory.ToString());
+                NavigationManager.NavigateTo($"/goodanswer");
             }
         }
         else

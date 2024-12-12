@@ -1,27 +1,16 @@
 ﻿using Microsoft.Data.SqlClient;
 using Quiz.Data;
-using System.Data.SqlClient;
-using System.Xml.Serialization;
 
 namespace Quiz.Api.Services
 {
     public class QuizService : IQuizService
     {
-
-        // NAZWA SERWERA LUB ADRES IP BAZY DANYCH
-        // NAZWA BAZY DANYCH
-        // UZYTKOWNIK
-        // HASŁO
-
-        // CONNECTION STRING
-        // ""Server=.\\HERMANLOCAL;Database=CqrsTp1;Integrated Security=True;TrustServerCertificate=True;"
-
         private readonly SqlConnection _sqlConnection;
         private readonly Random _random;
 
         public QuizService()
         {
-            var connString = "Server=.\\HERMANLOCAL;Database=CqrsTp1;Integrated Security=True;TrustServerCertificate=True";
+            var connString = "Server=tcp:projektysan.database.windows.net,1433;Initial Catalog=sanquiz;Persist Security Info=False;User ID=aherman;Password=yxFH#D8w1SabJ1TAH99f;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             _sqlConnection = new SqlConnection(connString);
             _random = new Random();
         }
